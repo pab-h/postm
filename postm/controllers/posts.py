@@ -7,7 +7,7 @@ class PostsController(object):
     def __init__(self) -> None:
         self.service = PostsService()
 
-    def createPost(self) -> list[dict, int]:
+    def createPost(self) -> tuple[dict, int]:
         if not request.is_json:
             return {
                 "error": "the body needs to be json"
