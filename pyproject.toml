@@ -10,6 +10,8 @@ python = "^3.12"
 flask = "^3.0.3"
 pymongo = "^4.7.2"
 
+[tool.poetry.scripts]
+start = 'scripts:start'
 
 [build-system]
 requires = ["poetry-core"]
