@@ -7,6 +7,9 @@ class PostCreateError(Exception):
 class PostFindError(Exception):
     pass
 
+class PostDeleteError(Exception):
+    pass
+
 class PostsService(object):
     def __init__(self) -> None:
         self.repository = PostRepository()
@@ -34,4 +37,12 @@ class PostsService(object):
             raise PostFindError(f"post { id } not exists")
 
         return post
+    
+    def delete(self, id: str) -> bool:
+        post = self.findById(id)
+
+        if not post:
+            raise PostDeleteError(f"post { id } not exists")
+
+        return self.repository.delete(id)
     

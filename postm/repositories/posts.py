@@ -61,3 +61,10 @@ class PostRepository(object):
             createdAt = post.get("createdAt", ""),
             updatedAt = post.get("updatedAt", "")
         )
+    
+    def delete(self, id: str) -> bool:
+        result = self.collection.delete_one({
+            "id": id
+        })
+
+        return result.deleted_count > 0

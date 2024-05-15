@@ -20,3 +20,7 @@ def findAllPost():
 @postsBp.get("/find/<string:id>")
 def findPostById(id: str):
     return postsController.findById(id)
+
+@postsBp.delete("/delete/<string:id>")
+def deletePost(id: str):
+    return postsController.delete(id)

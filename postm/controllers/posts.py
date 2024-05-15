@@ -61,3 +61,29 @@ class PostsController(object):
             return {
                 "error": str(error)
             }, 400
+        
+        except: 
+            return {
+                "error": "Something unexpected happened"
+            }, 500
+
+    def delete(self, id: str) -> tuple[dict, int]:
+        try:
+            if not self.service.delete(id): 
+                return {
+                    "message": f"Unable to remove post { id }"
+                }, 400
+            
+            return {
+                "message": f"post { id } removed"
+            }, 200
+    
+        except PostFindError as error:
+            return {
+                "error": str(error)
+            }, 400
+
+        except: 
+            return {
+                "error": "Something unexpected happened"
+            }, 500
