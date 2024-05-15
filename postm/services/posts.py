@@ -4,6 +4,9 @@ from postm.entities.post import Post
 class PostCreateError(Exception):
     pass
 
+class PostFindError(Exception):
+    pass
+
 class PostsService(object):
     def __init__(self) -> None:
         self.repository = PostRepository()
@@ -23,3 +26,12 @@ class PostsService(object):
 
     def findAll(self) -> list[Post]:
         return self.repository.findAll()
+
+    def findById(self, id: str) -> Post | None:
+        post = self.repository.findById(id)
+
+        if not post:
+            raise PostFindError(f"post { id } not exists")
+
+        return post
+    

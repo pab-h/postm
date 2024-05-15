@@ -16,3 +16,7 @@ def createPost():
 @postsBp.get("/all")
 def findAllPost():
     return postsController.findAll()
+
+@postsBp.get("/find/<string:id>")
+def findPostById(id: str):
+    return postsController.findById(id)

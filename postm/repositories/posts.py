@@ -44,3 +44,20 @@ class PostRepository(object):
             posts.append(post)
 
         return posts
+    
+    def findById(self, id: str) -> Post | None:
+        post: dict = self.collection.find_one({
+            "id": id
+        })
+
+        if not post:
+            return None
+        
+        return Post(
+            id = post.get("id", ""),
+            title = post.get("title", ""),
+            image = post.get("image", ""),
+            description = post.get("description", ""),
+            createdAt = post.get("createdAt", ""),
+            updatedAt = post.get("updatedAt", "")
+        )
