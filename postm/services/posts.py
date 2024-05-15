@@ -8,14 +8,14 @@ class PostsService(object):
     def __init__(self) -> None:
         self.repository = PostRepository()
 
-    def createPost(self, title: str, description: str, image: str = None) -> Post:
+    def create(self, title: str, description: str, image: str = None) -> Post:
         if not title:
             raise PostCreateError("title is not provided")
         
         if not description:
             raise PostCreateError("description is not provided")
         
-        return self.repository.createPost(
+        return self.repository.create(
             title = title, 
             description = description, 
             image = image

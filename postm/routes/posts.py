@@ -11,4 +11,4 @@ postsController = PostsController()
 
 @postsBp.post("/create")
 def createPost():
-    return postsController.createPost()
+    return postsController.create()

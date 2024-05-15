@@ -8,7 +8,7 @@ class PostRepository(object):
     def __init__(self) -> None:
         self.collection = database["posts"]
 
-    def createPost(self, title: str, description: str, image: str = None) -> Post:
+    def create(self, title: str, description: str, image: str = None) -> Post:
         post = Post(
             id = uuid(),
             title = title,
