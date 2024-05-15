@@ -16,7 +16,7 @@ class Post(object):
     def toJson(self) -> dict[str, str]:
         return {
             "id": str(self.id),
-            "title": str(self.title),
+            "title": self.title,
             "image": self.image,
             "description": self.description,
             "created_at": self.created_at.strftime("%d/%m/%Y %H:%M"),
