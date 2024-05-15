@@ -21,3 +21,5 @@ class PostRepository(object):
         self.collection.insert_one(
             document = post.toJson()
         )
+
+        return post
