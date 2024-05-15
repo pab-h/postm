@@ -36,3 +36,11 @@ class PostsController(object):
             return {
                 "error": "Something unexpected happened"
             }, 500
+        
+    def findAll(self) -> tuple[dict, int]:
+        posts = self.service.findAll()
+
+        postsFormated = [post.toJson() for post in posts]
+
+        return { "posts": postsFormated }, 200
+    

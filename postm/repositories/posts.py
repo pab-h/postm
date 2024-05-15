@@ -1,6 +1,8 @@
 from postm.entities.post import Post
 from postm.database import database 
+
 from uuid import uuid4 as uuid
+
 from datetime import datetime
 
 class PostRepository(object):
@@ -10,12 +12,12 @@ class PostRepository(object):
 
     def create(self, title: str, description: str, image: str = None) -> Post:
         post = Post(
-            id = uuid(),
+            id = str(uuid()),
             title = title,
             description = description,
             image = image,
-            created_at = datetime.now(),
-            updated_at = datetime.now()
+            createdAt = datetime.now().strftime("%d/%m/%Y %H:%M"),
+            updatedAt = datetime.now().strftime("%d/%m/%Y %H:%M")
         )
 
         self.collection.insert_one(
@@ -23,3 +25,22 @@ class PostRepository(object):
         )
 
         return post
+    
+    def findAll(self) -> list[Post]:
+        postsDict: list[dict] = self.collection.find()
+
+        posts = []
+
+        for post in postsDict:
+            post = Post(
+                id = post.get("id", ""),
+                title = post.get("title", ""),
+                description = post.get("description", ""),
+                image = post.get("image", ""),
+                createdAt = post.get("createdAt", ""),
+                updatedAt = post.get("updatedAt", "")
+            )
+
+            posts.append(post)
+
+        return posts

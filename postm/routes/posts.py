@@ -12,3 +12,7 @@ postsController = PostsController()
 @postsBp.post("/create")
 def createPost():
     return postsController.create()
+
+@postsBp.get("/all")
+def findAllPost():
+    return postsController.findAll()

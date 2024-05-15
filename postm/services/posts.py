@@ -20,3 +20,6 @@ class PostsService(object):
             description = description, 
             image = image
         )
+
+    def findAll(self) -> list[Post]:
+        return self.repository.findAll()
