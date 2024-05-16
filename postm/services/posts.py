@@ -10,6 +10,10 @@ class PostFindError(Exception):
 class PostDeleteError(Exception):
     pass
 
+class PostUpdateError(Exception):
+    pass
+
+
 class PostsService(object):
     def __init__(self) -> None:
         self.repository = PostRepository()
@@ -30,7 +34,7 @@ class PostsService(object):
     def findAll(self) -> list[Post]:
         return self.repository.findAll()
 
-    def findById(self, id: str) -> Post | None:
+    def findById(self, id: str) -> Post:
         post = self.repository.findById(id)
 
         if not post:
@@ -39,10 +43,14 @@ class PostsService(object):
         return post
     
     def delete(self, id: str) -> bool:
-        post = self.findById(id)
+        post = self.repository.findById(id)
 
         if not post:
             raise PostDeleteError(f"post { id } not exists")
 
         return self.repository.delete(id)
     
+    def update(self, postParsed: Post) -> bool:
+        self.findById(postParsed.id)
+
+        return self.repository.update(postParsed)

@@ -4,6 +4,8 @@ from postm.services.posts import PostsService
 from postm.services.posts import PostCreateError
 from postm.services.posts import PostFindError
 
+from postm.entities.post import Post
+
 class PostsController(object):
     def __init__(self) -> None:
         self.service = PostsService()
@@ -87,3 +89,42 @@ class PostsController(object):
             return {
                 "error": "Something unexpected happened"
             }, 500
+
+    def update(self, id: str) -> tuple[dict, int]:
+        if not request.is_json:
+            return {
+                "error": "the body needs to be json"
+            }, 400
+
+        data: dict = request.get_json()
+
+        title: str = data.get("title", "")
+        description: str = data.get("description", "")
+
+        try:
+            postParsed = Post(
+                id = id,
+                title = title,
+                description = description,
+                image = None,
+                createdAt = "",
+                updatedAt = ""
+            )
+
+            if not self.service.update(postParsed):
+                return {
+                    "error": f"Unable to update post { id }"
+                }
+
+            return postParsed.toJson(), 200
+
+        except PostFindError as error:
+            return {
+                "error": str(error)
+            }, 400
+        
+        # except: 
+        #     return {
+        #         "error": "Something unexpected happened"
+        #     }, 500
+        

@@ -24,3 +24,7 @@ def findPostById(id: str):
 @postsBp.delete("/delete/<string:id>")
 def deletePost(id: str):
     return postsController.delete(id)
+
+@postsBp.put("/update/<string:id>")
+def updatePost(id: str):
+    return postsController.update(id)

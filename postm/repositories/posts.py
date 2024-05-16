@@ -10,14 +10,18 @@ class PostRepository(object):
     def __init__(self) -> None:
         self.collection = database["posts"]
 
+    @classmethod
+    def nowTime(cls) -> str:
+        return datetime.now().strftime("%d/%m/%Y %H:%M")
+
     def create(self, title: str, description: str, image: str = None) -> Post:
         post = Post(
             id = str(uuid()),
             title = title,
             description = description,
             image = image,
-            createdAt = datetime.now().strftime("%d/%m/%Y %H:%M"),
-            updatedAt = datetime.now().strftime("%d/%m/%Y %H:%M")
+            createdAt = PostRepository.nowTime(),
+            updatedAt = PostRepository.nowTime()
         )
 
         self.collection.insert_one(
@@ -68,3 +72,16 @@ class PostRepository(object):
         })
 
         return result.deleted_count > 0
+    
+    def update(self, postParsed: Post) -> bool:
+        oldPost = self.findById(postParsed.id)
+
+        postParsed.createdAt = oldPost.createdAt
+        postParsed.updatedAt = PostRepository.nowTime()
+
+        result = self.collection.replace_one(
+            filter = { "id": postParsed.id }, 
+            replacement = postParsed.toJson() 
+        )
+
+        return result.modified_count > 0
