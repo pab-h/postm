@@ -1,9 +1,6 @@
 from flask import request
 
 from postm.services.posts import PostsService
-from postm.services.posts import PostCreateError
-from postm.services.posts import PostFindError
-
 from postm.entities.post import Post
 
 class PostsController(object):
@@ -30,15 +27,10 @@ class PostsController(object):
 
             return post.toJson(), 200
 
-        except PostCreateError as error:
+        except Exception as error:
             return {
                 "error": str(error)
             }, 400
-        
-        except: 
-            return {
-                "error": "Something unexpected happened"
-            }, 500
         
     def findAll(self) -> tuple[dict, int]:
         try: 
@@ -59,15 +51,10 @@ class PostsController(object):
 
             return post.toJson(), 200
         
-        except PostFindError as error:
+        except Exception as error:
             return {
                 "error": str(error)
             }, 400
-        
-        except: 
-            return {
-                "error": "Something unexpected happened"
-            }, 500
 
     def delete(self, id: str) -> tuple[dict, int]:
         try:
@@ -80,15 +67,10 @@ class PostsController(object):
                 "message": f"post { id } removed"
             }, 200
     
-        except PostFindError as error:
+        except Exception as error:
             return {
                 "error": str(error)
             }, 400
-
-        except: 
-            return {
-                "error": "Something unexpected happened"
-            }, 500
 
     def update(self, id: str) -> tuple[dict, int]:
         if not request.is_json:
@@ -118,13 +100,8 @@ class PostsController(object):
 
             return postParsed.toJson(), 200
 
-        except PostFindError as error:
+        except Exception as error:
             return {
                 "error": str(error)
             }, 400
-        
-        # except: 
-        #     return {
-        #         "error": "Something unexpected happened"
-        #     }, 500
         
