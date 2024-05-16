@@ -28,3 +28,7 @@ def deletePost(id: str):
 @postsBp.put("/update/<string:id>")
 def updatePost(id: str):
     return postsController.update(id)
+
+@postsBp.get("/all/page")
+def findAllPostPaged():
+    return postsController.findAllPaged()

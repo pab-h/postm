@@ -1,4 +1,6 @@
 from postm.repositories.posts import PostRepository
+from postm.repositories.posts import PostPage
+
 from postm.entities.post import Post
 
 class PostsService(object):
@@ -41,3 +43,12 @@ class PostsService(object):
         self.findById(postParsed.id)
 
         return self.repository.update(postParsed)
+    
+    def findAllPaged(self, index: int, size: int) -> PostPage:
+        if not size > 0:
+            raise Exception("size must be greater than zero")
+        
+        if not index >= 0:
+            raise Exception("the index must be positive")
+
+        return self.repository.findAllPaged(index, size)

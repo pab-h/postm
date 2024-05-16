@@ -1,6 +1,8 @@
 from flask import request
 
 from postm.services.posts import PostsService
+from postm.services.posts import PostPage
+
 from postm.entities.post import Post
 
 class PostsController(object):
@@ -100,6 +102,32 @@ class PostsController(object):
 
             return postParsed.toJson(), 200
 
+        except Exception as error:
+            return {
+                "error": str(error)
+            }, 400
+        
+    def findAllPaged(self) -> tuple[dict, int]:
+        index = request.args.get("index", 0)
+        size = request.args.get("size", 10)
+
+        try: 
+            index = int(index)
+            size = int(size)
+
+            postPage = self.service.findAllPaged(
+                index = int(index),
+                size = int(size)
+            )
+
+            postFormated = [ p.toJson() for p in postPage.posts ]
+
+            return {
+                "posts": postFormated,
+                "next": index + 1,
+                "previous": index - 1
+            }, 200
+        
         except Exception as error:
             return {
                 "error": str(error)

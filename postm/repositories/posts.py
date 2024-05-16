@@ -5,6 +5,14 @@ from uuid import uuid4 as uuid
 
 from datetime import datetime
 
+from dataclasses import dataclass
+
+@dataclass
+class PostPage(object):
+    posts: list[Post]
+    index: int
+    size: int
+
 class PostRepository(object):
 
     def __init__(self) -> None:
@@ -49,7 +57,7 @@ class PostRepository(object):
 
         return posts
     
-    def findById(self, id: str) -> Post | None:
+    def findById(self, id: str) -> Post:
         post: dict = self.collection.find_one({
             "id": id
         })
@@ -85,3 +93,32 @@ class PostRepository(object):
         )
 
         return result.modified_count > 0
+    
+    def findAllPaged(self, index: int, size: int) -> PostPage:
+        posts = []
+        
+        skip = size * index
+        
+        results = self.collection\
+                .find()\
+                .skip(skip)\
+                .limit(size)
+        
+        for postDict in results:
+            post = Post(
+                id = postDict.get("id", ""),
+                title = postDict.get("title", ""),
+                image = postDict.get("image", ""),
+                description = postDict.get("description", ""),
+                createdAt = postDict.get("createdAt", ""),
+                updatedAt = postDict.get("updatedAt", "")
+            )
+
+            posts.append(post)
+
+        return PostPage(
+            posts = posts,
+            index = index,
+            size = size
+        )
+    
