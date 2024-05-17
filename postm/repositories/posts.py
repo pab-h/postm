@@ -1,11 +1,12 @@
+import os
+
 from postm.entities.post import Post
 from postm.database import database 
 
 from uuid import uuid4 as uuid
-
 from datetime import datetime
-
 from dataclasses import dataclass
+from werkzeug.datastructures import FileStorage
 
 @dataclass
 class PostPage(object):
@@ -22,7 +23,29 @@ class PostRepository(object):
     def nowTime(cls) -> str:
         return datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    def create(self, title: str, description: str, image: str = None) -> Post:
+    @classmethod
+    def saveFileInDisk(cls, file: FileStorage) -> str:
+        extension = file.filename.split(".").pop()
+        newFilename = f"{ uuid() }.{ extension }"
+        
+        uploadFolder = "uploads"
+
+        if not os.path.exists(uploadFolder):
+            os.makedirs(uploadFolder)
+
+        filePath = os.path.join(
+            uploadFolder,
+            newFilename
+        ) 
+
+        file.save(filePath)
+
+        return filePath
+
+    def create(self, title: str, description: str, image: FileStorage) -> Post:
+        if image:
+            image = PostRepository.saveFileInDisk(image)
+
         post = Post(
             id = str(uuid()),
             title = title,

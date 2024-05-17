@@ -3,17 +3,28 @@ from postm.repositories.posts import PostPage
 
 from postm.entities.post import Post
 
+from werkzeug.datastructures import FileStorage
+
 class PostsService(object):
     def __init__(self) -> None:
         self.repository = PostRepository()
+        self.extensionsAllowed = ["png", "jpeg", "jpg", "gif"]
 
-    def create(self, title: str, description: str, image: str = None) -> Post:
+    def create(self, title: str, description: str, image: FileStorage) -> Post:
         if not title:
             raise Exception("title is not provided")
         
         if not description:
             raise Exception("description is not provided")
         
+        if image:
+            extension = image.filename\
+                .split(".")\
+                .pop()
+            
+            if extension not in self.extensionsAllowed:
+                raise Exception(f"{ extension } not allowed")
+
         return self.repository.create(
             title = title, 
             description = description, 

@@ -1,8 +1,6 @@
 from flask import request
 
 from postm.services.posts import PostsService
-from postm.services.posts import PostPage
-
 from postm.entities.post import Post
 
 class PostsController(object):
@@ -10,21 +8,19 @@ class PostsController(object):
         self.service = PostsService()
 
     def create(self) -> tuple[dict, int]:
-        if not request.is_json:
-            return {
-                "error": "the body needs to be json"
-            }, 400
 
-        data: dict = request.get_json()
+        data = request.form
 
         title: str = data.get("title", "")
         description: str = data.get("description", "")
+        image = request.files.get("image", None)
 
         try:
+
             post = self.service.create(
                 title = title,
                 description = description,
-                image = None
+                image = image
             )
 
             return post.toJson(), 200
