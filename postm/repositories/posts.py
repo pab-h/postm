@@ -98,6 +98,11 @@ class PostRepository(object):
         )
     
     def delete(self, id: str) -> bool:
+        post = self.findById(id)
+
+        if post.image:
+            os.remove(post.image)
+
         result = self.collection.delete_one({
             "id": id
         })
