@@ -71,32 +71,29 @@ class PostsController(object):
             }, 400
 
     def update(self, id: str) -> tuple[dict, int]:
-        if not request.is_json:
-            return {
-                "error": "the body needs to be json"
-            }, 400
 
-        data: dict = request.get_json()
+        data = request.form
 
         title: str = data.get("title", "")
         description: str = data.get("description", "")
+        image = request.files.get("image", None)
 
         try:
-            postParsed = Post(
+            isUpdate = self.service.update(
                 id = id,
                 title = title,
                 description = description,
-                image = None,
-                createdAt = "",
-                updatedAt = ""
+                image = image
             )
 
-            if not self.service.update(postParsed):
+            if not isUpdate: 
                 return {
-                    "error": f"Unable to update post { id }"
-                }
-
-            return postParsed.toJson(), 200
+                    "message": f"Unable to update post { id }"
+                }, 400
+            
+            return {
+                "message": f"post { id } updated"
+            }, 200
 
         except Exception as error:
             return {

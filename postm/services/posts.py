@@ -50,10 +50,30 @@ class PostsService(object):
 
         return self.repository.delete(id)
     
-    def update(self, postParsed: Post) -> bool:
-        self.findById(postParsed.id)
+    def update(self, id: str, title: str, description: str, image: FileStorage) -> bool:
+        if not self.repository.findById(id):
+            raise Exception(f"post { id } not exists")
 
-        return self.repository.update(postParsed)
+        if not title:
+            raise Exception("title is not provided")
+        
+        if not description:
+            raise Exception("description is not provided")
+        
+        if image:
+            extension = image.filename\
+                .split(".")\
+                .pop()
+            
+            if extension not in self.extensionsAllowed:
+                raise Exception(f"{ extension } not allowed")
+
+        return self.repository.update(
+            id = id,
+            title = title,
+            description = description,
+            image = image
+        )
     
     def findAllPaged(self, index: int, size: int) -> PostPage:
         if not size > 0:

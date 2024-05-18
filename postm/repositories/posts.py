@@ -109,19 +109,31 @@ class PostRepository(object):
 
         return result.deleted_count > 0
     
-    def update(self, postParsed: Post) -> bool:
-        oldPost = self.findById(postParsed.id)
+    def update(self, id: str, title: str, description: str, image: FileStorage) -> bool:
+        oldPost = self.findById(id = id)
 
-        postParsed.createdAt = oldPost.createdAt
-        postParsed.updatedAt = PostRepository.nowTime()
+        newImage = oldPost.image
+
+        if image:
+            newImage = PostRepository.saveFileInDisk(image)
+            os.remove(oldPost.image)
+
+        updatedPost = Post(
+            id = id,
+            title = title,
+            description = description,
+            image = newImage,
+            createdAt = oldPost.createdAt,
+            updatedAt = PostRepository.nowTime()
+        )
 
         result = self.collection.replace_one(
-            filter = { "id": postParsed.id }, 
-            replacement = postParsed.toJson() 
+            filter = { "id": id },
+            replacement = updatedPost.toJson()
         )
 
         return result.modified_count > 0
-    
+
     def findAllPaged(self, index: int, size: int) -> PostPage:
         posts = []
         
