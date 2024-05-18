@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 flask = "^3.0.3"
 pymongo = "^4.7.2"
+python-dotenv = "^1.0.1"
 
 [tool.poetry.scripts]
 start = 'scripts:start'

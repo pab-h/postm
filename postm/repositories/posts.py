@@ -28,7 +28,7 @@ class PostRepository(object):
         extension = file.filename.split(".").pop()
         newFilename = f"{ uuid() }.{ extension }"
         
-        uploadFolder = "uploads"
+        uploadFolder = os.getenv("UPLOADFOLDER", "uploads")
 
         if not os.path.exists(uploadFolder):
             os.makedirs(uploadFolder)
