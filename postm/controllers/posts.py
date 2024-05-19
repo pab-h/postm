@@ -1,7 +1,9 @@
 from flask import request
 
 from postm.services.posts import PostsService
-from postm.entities.post import Post
+from postm.repositories.posts import PostPage
+
+from os import getenv
 
 class PostsController(object):
     def __init__(self) -> None:
@@ -100,6 +102,19 @@ class PostsController(object):
                 "error": str(error)
             }, 400
         
+    def createNextUrlPage(self, page: PostPage) -> str:
+        query = f"index={ page.index + 1 }&size={ page.size }"
+
+        return f"{ getenv("URL") }/api/posts/all/page?{ query }"
+    
+    def createPreviousUrlPage(self, page: PostPage) -> str:
+        if page.index - 1 < 0:
+            return None 
+
+        query = f"index={ page.index - 1 }&size={ page.size }"
+
+        return f"{ getenv("URL") }/api/posts/all/page?{ query }"
+        
     def findAllPaged(self) -> tuple[dict, int]:
         index = request.args.get("index", 0)
         size = request.args.get("size", 10)
@@ -115,10 +130,21 @@ class PostsController(object):
 
             postFormated = [ p.toJson() for p in postPage.posts ]
 
+            nextUrl = self.createNextUrlPage(
+                page = postPage
+            )
+
+            if not postFormated:
+                nextUrl = None
+
+            previousUrl = self.createPreviousUrlPage(
+                page = postPage
+            )
+
             return {
                 "posts": postFormated,
-                "next": index + 1,
-                "previous": index - 1
+                "next": nextUrl,
+                "previous": previousUrl
             }, 200
         
         except Exception as error:
