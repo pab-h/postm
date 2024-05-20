@@ -10,5 +10,5 @@ usersBp = Blueprint(
 usersController = UsersController()
 
 @usersBp.post("/create")
-def createPost():
+def createUser():
     return usersController.create()
