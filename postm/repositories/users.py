@@ -28,3 +28,20 @@ class UserRepository(Repository):
         )
 
         return user
+    
+    def findByEmail(self, email: str) -> User:
+        user: dict = self.collection.find_one({ 
+            "email": email 
+        })
+
+        if not user:
+            return None
+
+        return User(
+            id = user.get("id", ""),
+            username = user.get("username", ""),
+            email = user.get("email", ""),
+            password = user.get("password", ""),
+            createdAt = user.get("createdAt", ""),
+            updatedAt = user.get("updatedAt", "")
+        )

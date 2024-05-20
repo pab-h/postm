@@ -12,3 +12,7 @@ usersController = UsersController()
 @usersBp.post("/create")
 def createUser():
     return usersController.create()
+
+@usersBp.post("/login")
+def loginUser():
+    return usersController.login()
