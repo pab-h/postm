@@ -64,3 +64,20 @@ class UsersController(object):
             return {
                 "error": error
             }, status
+
+    def delete(self, id: str) -> tuple[dict, int]:
+        try:
+            if not self.service.delete(id): 
+                return {
+                    "message": f"Unable to remove user { id }"
+                }, 400
+            
+            return {
+                "message": f"user { id } removed"
+            }, 200
+    
+        except Exception as error:
+            return {
+                "error": str(error)
+            }, 400
+        

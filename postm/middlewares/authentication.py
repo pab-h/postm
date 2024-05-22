@@ -11,7 +11,7 @@ class AuthMiddleware(object):
     def __init__(self) -> None:
         self.service = UsersService()
 
-    def auth(self) -> None:
+    def auth(self) -> tuple[dict, int] | None:
         authorization = request.headers.get("Authorization")
 
         if not authorization:

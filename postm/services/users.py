@@ -70,3 +70,9 @@ class UsersService(object):
         return self.repository.findByEmail(
             email = email
         )
+
+    def delete(self, id: str) -> bool:
+        if not id:
+            raise Exception("id is not provided")
+
+        return self.repository.delete(id)

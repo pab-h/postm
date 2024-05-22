@@ -1,5 +1,9 @@
 from flask.blueprints import Blueprint
+
 from postm.controllers.users import UsersController
+from postm.middlewares.authentication import AuthMiddleware
+
+middleware = AuthMiddleware()
 
 usersBp = Blueprint(
     name = "users",
@@ -16,3 +20,12 @@ def createUser():
 @usersBp.post("/login")
 def loginUser():
     return usersController.login()
+
+@usersBp.delete("/delete/<string:id>")
+def deleteUser(id: str):
+    authResponse = middleware.auth()
+
+    if authResponse:
+        return authResponse
+
+    return usersController.delete(id)
