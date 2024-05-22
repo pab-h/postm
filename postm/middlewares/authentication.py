@@ -47,7 +47,7 @@ class AuthMiddleware(object):
                 "error": "token expired"
             }, 401  
 
-        # except Exception as error:
-        #     return {
-        #         "error": str(error)
-        #     }, 500
+        except Exception as error:
+            return {
+                "error": str(error)
+            }, 500
