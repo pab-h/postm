@@ -65,3 +65,8 @@ class UsersService(object):
                 "exp": time() + int(getenv("JWT_DURATION", 3600))
             }
         )
+    
+    def findByEmail(self, email: str) -> User:
+        return self.repository.findByEmail(
+            email = email
+        )
