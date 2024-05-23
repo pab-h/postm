@@ -35,13 +35,13 @@ class AuthMiddleware(object):
                 algorithms = ["HS256"]
             )
 
-            email = payload.get("email", "")
+            userId = payload.get("id", "")
 
-            user = self.service.findByEmail(email)
+            user = self.service.findById(userId)
 
             if not user:
                 return {
-                    "error": f"user { email } not found"
+                    "error": f"user { userId } not found"
                 }, 401
             
             request.user = user
