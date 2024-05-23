@@ -2,9 +2,9 @@ import os
 
 from postm.entities.post import Post
 from postm.database import database 
+from postm.repositories.repository import Repository
 
 from uuid import uuid4 as uuid
-from datetime import datetime
 from dataclasses import dataclass
 from werkzeug.datastructures import FileStorage
 
@@ -14,45 +14,23 @@ class PostPage(object):
     index: int
     size: int
 
-class PostRepository(object):
-
+class PostRepository(Repository):
     def __init__(self) -> None:
-        self.collection = database["posts"]
+        super().__init__()
 
-    @classmethod
-    def nowTime(cls) -> str:
-        return datetime.now().strftime("%d/%m/%Y %H:%M")
-
-    @classmethod
-    def saveFileInDisk(cls, file: FileStorage) -> str:
-        extension = file.filename.split(".").pop()
-        newFilename = f"{ uuid() }.{ extension }"
-        
-        uploadFolder = os.getenv("UPLOADFOLDER", "uploads")
-
-        if not os.path.exists(uploadFolder):
-            os.makedirs(uploadFolder)
-
-        filePath = os.path.join(
-            uploadFolder,
-            newFilename
-        ) 
-
-        file.save(filePath)
-
-        return filePath
+        self.collection = database.get_collection("posts")
 
     def create(self, title: str, description: str, image: FileStorage) -> Post:
         if image:
-            image = PostRepository.saveFileInDisk(image)
+            image = self.saveFileInDisk(image)
 
         post = Post(
             id = str(uuid()),
             title = title,
             description = description,
             image = image,
-            createdAt = PostRepository.nowTime(),
-            updatedAt = PostRepository.nowTime()
+            createdAt = self.nowTime(),
+            updatedAt = self.nowTime()
         )
 
         self.collection.insert_one(
@@ -115,7 +93,7 @@ class PostRepository(object):
         newImage = oldPost.image
 
         if image:
-            newImage = PostRepository.saveFileInDisk(image)
+            newImage = self.saveFileInDisk(image)
             os.remove(oldPost.image)
 
         updatedPost = Post(
@@ -124,7 +102,7 @@ class PostRepository(object):
             description = description,
             image = newImage,
             createdAt = oldPost.createdAt,
-            updatedAt = PostRepository.nowTime()
+            updatedAt = self.nowTime()
         )
 
         result = self.collection.replace_one(

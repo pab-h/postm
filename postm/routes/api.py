@@ -1,5 +1,7 @@
 from flask.blueprints import Blueprint
+
 from postm.routes.posts import postsBp
+from postm.routes.users import usersBp
 
 apiBp = Blueprint(
     name = "api", 
@@ -8,3 +10,4 @@ apiBp = Blueprint(
 )
 
 apiBp.register_blueprint(postsBp)
+apiBp.register_blueprint(usersBp)
