@@ -37,10 +37,14 @@ class AuthMiddleware(object):
 
             email = payload.get("email", "")
 
-            if not self.service.findByEmail(email):
+            user = self.service.findByEmail(email)
+
+            if not user:
                 return {
                     "error": f"user { email } not found"
                 }, 401
+            
+            request.user = user
             
         except ExpiredSignatureError as error:
             return {
