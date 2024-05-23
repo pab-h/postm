@@ -8,6 +8,8 @@ from jwt import encode
 from datetime import datetime
 from datetime import timedelta
 
+from datetime import timezone
+
 class UsersService(object):
     def __init__(self) -> None:
         self.repository = UserRepository()
@@ -21,6 +23,9 @@ class UsersService(object):
         
         if not password:
             raise Exception("password is not provided")
+        
+        if self.findByEmail(email):
+            raise Exception(f"email { email } already exists")
         
         return self.repository.create(
             username = username, 
@@ -60,13 +65,13 @@ class UsersService(object):
                 403    
             )
         
-        exp = datetime.now() + timedelta(
+        exp = datetime.now(timezone.utc) + timedelta(
             seconds = float(getenv("JWT_DURATION", 3600))
         )
 
         return encode(
             payload = { 
-                "email": email,
+                "id": user.id,
                 "exp": exp
             },
             key = getenv("JWT_KEY"),
@@ -76,9 +81,36 @@ class UsersService(object):
         return self.repository.findByEmail(
             email = email
         )
+    
+    def findById(self, id: str) -> User:
+        return self.repository.findById(id)
 
     def delete(self, id: str) -> bool:
         if not id:
             raise Exception("id is not provided")
 
         return self.repository.delete(id)
+    
+    def update(self, id: str, username: str, email: str, password: str) -> User:
+        if not id:
+            raise Exception("id is not provided")
+        
+        if not username:
+            raise Exception("username is not provided")
+        
+        if not email:
+            raise Exception("email is not provided")
+        
+        if not password:
+            raise Exception("password is not provided")
+        
+        if self.findByEmail(email):
+            raise Exception(f"email { email } already exists")
+        
+        return self.repository.update(
+            id = id,
+            username = username,
+            email = email,
+            password = password
+        )
+    
