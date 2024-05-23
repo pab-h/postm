@@ -4,7 +4,9 @@ from postm.entities.user import User
 from os import getenv
 from hashlib import sha256
 from jwt import encode
-from time import time
+
+from datetime import datetime
+from datetime import timedelta
 
 class UsersService(object):
     def __init__(self) -> None:
@@ -57,13 +59,17 @@ class UsersService(object):
                 f"wrong password for { email }",
                 403    
             )
+        
+        exp = datetime.now() + timedelta(
+            seconds = float(getenv("JWT_DURATION", 3600))
+        )
 
         return encode(
-            payload = { "email": email },
+            payload = { 
+                "email": email,
+                "exp": exp
+            },
             key = getenv("JWT_KEY"),
-            headers = {
-                "exp": time() + int(getenv("JWT_DURATION", 3600))
-            }
         )
     
     def findByEmail(self, email: str) -> User:
