@@ -46,6 +46,23 @@ class UserRepository(Repository):
             updatedAt = user.get("updatedAt", "")
         )
     
+    def findById(self, id: str) -> User:
+        user: dict = self.collection.find_one({ 
+            "id": id 
+        })
+
+        if not user:
+            return None
+
+        return User(
+            id = user.get("id", ""),
+            username = user.get("username", ""),
+            email = user.get("email", ""),
+            password = user.get("password", ""),
+            createdAt = user.get("createdAt", ""),
+            updatedAt = user.get("updatedAt", "")
+        )
+    
     def delete(self, id: str) -> bool:
         result = self.collection.delete_one({
             "id": id
@@ -53,3 +70,23 @@ class UserRepository(Repository):
 
         return result.deleted_count > 0
     
+    def update(self, id: str, username: str, email: str, password: str) -> User:
+        userOld = self.findById(id)
+
+        userUpdated = User(
+            id = id,
+            username = username,
+            email = email,
+            password = sha256(password.encode())\
+                .hexdigest(),
+            createdAt = userOld.createdAt,
+            updatedAt = self.nowTime()
+        )
+
+        self.collection.replace_one(
+            filter = { "id": id },
+            replacement = userUpdated.toJson()
+        )
+
+        return userUpdated
+        

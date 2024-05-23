@@ -31,3 +31,12 @@ def deleteUser():
         return authResponse
 
     return usersController.delete()
+
+@usersBp.put("/update")
+def updateUser():
+    authResponse = middleware.auth()
+
+    if authResponse:
+        return authResponse
+
+    return usersController.update()

@@ -82,3 +82,35 @@ class UsersController(object):
                 "error": str(error)
             }, 400
         
+    def update(self) -> tuple[dict, int]:
+        if not request.is_json:
+            return {
+                "error": "the body needs to be a json"
+            }, 400
+
+
+        data: dict = request.get_json()
+
+        id = request.user.id
+
+        username: str = data.get("username", "")
+        email: str = data.get("email", "")
+        password: str = data.get("password", "")
+
+        try:
+            user = self.service.update(
+                id = id,
+                username = username, 
+                email = email, 
+                password = password
+            )
+
+            user.password = None
+
+            return user.toJson(), 200
+
+        except Exception as error:
+            return {
+                "error": str(error)
+            }, 400
+        
