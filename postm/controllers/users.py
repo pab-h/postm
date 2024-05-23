@@ -1,7 +1,6 @@
 from flask import request
 
 from postm.services.users import UsersService
-from postm.entities.user import User
 
 class UsersController(object):
     def __init__(self) -> None:
@@ -65,8 +64,10 @@ class UsersController(object):
                 "error": error
             }, status
 
-    def delete(self, id: str) -> tuple[dict, int]:
+    def delete(self) -> tuple[dict, int]:
         try:
+            id = request.user.id
+
             if not self.service.delete(id): 
                 return {
                     "message": f"Unable to remove user { id }"
