@@ -95,6 +95,11 @@ class UsersService(object):
         if not id:
             raise Exception("id is not provided")
         
+        userFound = self.findById(id)
+
+        if not userFound:
+            raise Exception(f"user { id } not exists")
+        
         if not username:
             raise Exception("username is not provided")
         
@@ -104,7 +109,7 @@ class UsersService(object):
         if not password:
             raise Exception("password is not provided")
         
-        if self.findByEmail(email):
+        if userFound.email != email and self.findByEmail(email):
             raise Exception(f"email { email } already exists")
         
         return self.repository.update(
