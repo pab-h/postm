@@ -16,7 +16,7 @@ class Repository(ABC):
         extension = file.filename.split(".").pop()
         newFilename = f"{ uuid() }.{ extension }"
         
-        uploadFolder = os.getenv("UPLOADFOLDER", "uploads")
+        uploadFolder = os.getenv("UPLOAD_FOLDER")
 
         if not os.path.exists(uploadFolder):
             os.makedirs(uploadFolder)
@@ -28,4 +28,4 @@ class Repository(ABC):
 
         file.save(filePath)
 
-        return filePath
+        return newFilename
