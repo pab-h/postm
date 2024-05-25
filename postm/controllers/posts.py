@@ -25,6 +25,9 @@ class PostsController(object):
                 image = image
             )
 
+            if post.image:
+                post.image = f"{ getenv("URL") }/api/images/{ post.image }"
+
             return post.toJson(), 200
 
         except Exception as error:
