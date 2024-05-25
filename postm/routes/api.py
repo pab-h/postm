@@ -3,6 +3,7 @@ from flask import send_from_directory
 
 from os import getenv
 from os import getcwd
+from os.path import join
 
 from postm.routes.posts import postsBp
 from postm.routes.users import usersBp
@@ -26,7 +27,7 @@ def imageUploaded(name: str):
     if authResponse:
         return authResponse
 
-    directoryPath = os.path.join(
+    directoryPath = join(
         getcwd(), 
         getenv("UPLOAD_FOLDER")
     )
