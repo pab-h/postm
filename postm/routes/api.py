@@ -2,8 +2,7 @@ from flask.blueprints import Blueprint
 from flask import send_from_directory
 
 from os import getenv
-
-import os
+from os import getcwd
 
 from postm.routes.posts import postsBp
 from postm.routes.users import usersBp
@@ -28,7 +27,7 @@ def imageUploaded(name: str):
         return authResponse
 
     directoryPath = os.path.join(
-        os.getcwd(), 
+        getcwd(), 
         getenv("UPLOAD_FOLDER")
     )
 
