@@ -1,5 +1,7 @@
 from flask.blueprints import Blueprint
+
 from postm.controllers.posts import PostsController
+from postm.middlewares.authentication import AuthMiddleware
 
 postsBp = Blueprint(
     name = "posts",
@@ -8,6 +10,12 @@ postsBp = Blueprint(
 )
 
 postsController = PostsController()
+
+middleware = AuthMiddleware()
+
+@postsBp.before_request
+def postsMiddleware():
+    return middleware.auth()
 
 @postsBp.post("/create")
 def createPost():
