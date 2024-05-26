@@ -25,6 +25,9 @@ class PostsController(object):
                 image = image
             )
 
+            if post.image:
+                post.image = f"{ getenv("URL") }/api/images/{ post.image }"
+
             return post.toJson(), 200
 
         except Exception as error:
@@ -35,6 +38,10 @@ class PostsController(object):
     def findAll(self) -> tuple[dict, int]:
         try: 
             posts = self.service.findAll()
+
+            for post in posts:
+                if post.image:
+                    post.image = f"{ getenv("URL") }/api/images/{ post.image }"
 
             postsFormated = [post.toJson() for post in posts]
 
@@ -48,6 +55,9 @@ class PostsController(object):
     def findById(self, id: str) -> tuple[dict, int]:
         try:
             post = self.service.findById(id)
+
+            if post.image:
+                post.image = f"{ getenv("URL") }/api/images/{ post.image }"
 
             return post.toJson(), 200
         
@@ -127,6 +137,10 @@ class PostsController(object):
                 index = int(index),
                 size = int(size)
             )
+
+            for post in postPage.posts:
+                if post.image:
+                    post.image = f"{ getenv("URL") }/api/images/{ post.image }"
 
             postFormated = [ p.toJson() for p in postPage.posts ]
 

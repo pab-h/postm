@@ -79,7 +79,12 @@ class PostRepository(Repository):
         post = self.findById(id)
 
         if post.image:
-            os.remove(post.image)
+            os.remove(
+                os.path.join(
+                    os.getenv("UPLOAD_FOLDER"),
+                    post.image
+                )
+            )
 
         result = self.collection.delete_one({
             "id": id
