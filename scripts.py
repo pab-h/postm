@@ -1,5 +1,5 @@
+import subprocess
 from postm.app import app
-
 from os import getenv
 
 def start() -> None:
@@ -7,3 +7,13 @@ def start() -> None:
         host = getenv("HOST", "localhost"),
         port= getenv("PORT", 5000)
     )
+
+def test() -> None:
+    subprocess.run([
+        "poetry", 
+        "run", 
+        "python", 
+        "-m", 
+        "unittest", 
+        "discover"
+    ])
