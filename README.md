@@ -26,7 +26,13 @@ poetry install
 
 3. Crie e preencha corretamente o arquivo com as variáveis de ambiente, *.env*, Há um arquivo exemplo, *.env-example*.
 
-4. Inicialize a aplicação:
+4. (opcional) Execute os testes unitários para verificar se está tudo certo
+
+```bash
+poetry run test 
+```
+
+5. Inicialize a aplicação:
 
 ```bash
 poetry run start 
