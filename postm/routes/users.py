@@ -3,8 +3,6 @@ from flask.blueprints import Blueprint
 from postm.controllers.users import UsersController
 from postm.middlewares.authentication import AuthMiddleware
 
-from flask import request
-
 middleware = AuthMiddleware()
 
 usersBp = Blueprint(
