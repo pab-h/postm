@@ -12,16 +12,14 @@ Como dito pela própia Loading:
 
 > Perdoem-me. Ainda não sei utilizar docker para facilitar a sua instalação. 
 
-Para continuar você precisará ter o [python](https://www.python.org/), [poetry](https://python-poetry.org/) e o [mongoDB](https://www.mongodb.com/) instalados em sua máquina.
-
 1. Clone o repositório:
 ```bash
 git clone https://github.com/pab-h/postm.git
 ```
 
-2. Instale as dependencias utilizando o **poetry**:
+2. Instale as dependencias:
 ```bash
-poetry install 
+npm install
 ```
 
 3. Crie e preencha corretamente o arquivo com as variáveis de ambiente, *.env*, Há um arquivo exemplo, *.env-example*.
@@ -29,13 +27,13 @@ poetry install
 4. (opcional) Execute os testes unitários para verificar se está tudo certo
 
 ```bash
-poetry run test 
+npm run test 
 ```
 
 5. Inicialize a aplicação:
 
 ```bash
-poetry run start 
+npm run start 
 ```
 
 # Documentação 
