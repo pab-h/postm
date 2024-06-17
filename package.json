@@ -2,7 +2,7 @@
   "name": "postm",
   "version": "1.0.0",
   "description": "Postm é a implementação do projeto final do processo seletivo da Loading.",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "npx tsx watch src/index.ts",
     "build": "npx tsc",
