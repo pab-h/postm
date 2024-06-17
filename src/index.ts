@@ -1,10 +1,10 @@
-import "dotenv/config";
+// import "dotenv/config";
 import App from "./app";
+import env from "./env";
 
 const app = new App(
-    process.env.SERVER_HOST as string,
-    Number(process.env.SERVER_PORT)
+    env.SERVER_HOST,
+    env.SERVER_PORT
 );
 
 app.run();
-
