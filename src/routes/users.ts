@@ -1,40 +1,15 @@
 import { Router, Request, Response } from "express";
+import Controller from "../controllers/users";
 
 const router = Router();
+const controller = new Controller();
 
-router.post("/create", (request: Request, response: Response) => {
-    response.send({
-        "createdAt": "",
-        "email": "",
-        "id": "",
-        "password": null,
-        "updatedAt": "",
-        "username": ""
-    });
-});
+router.post("/create", controller.create);
 
-router.post("/login", (request: Request, response: Response) => {
-    response.send({
-        "token": ""
-    });
-});
+router.post("/login", controller.login);
 
-router.delete("/delete", (request: Request, response: Response) => {
-    response.send({
-        "message": ""
-    });
-});
+router.delete("/delete", controller.delete);
 
-router.put("/update", (request: Request, response: Response) => {
-    response.send({
-        "createdAt": "",
-        "email": "",
-        "id": "",
-        "password": null,
-        "updatedAt": "",
-        "username": ""
-    });
-});
-
+router.put("/update", controller.update);
 
 export default router;
