@@ -1,5 +1,5 @@
 import express from "express";
-import { Express, Request, Response } from "express";
+import { Express } from "express";
 import apiRouter from "./routes/api";
 
 export default class App {
@@ -13,6 +13,7 @@ export default class App {
         this.host = host; 
         this.port = port;
 
+        this.express.use(express.json());
         this.express.use("/api", apiRouter);
 
     }
