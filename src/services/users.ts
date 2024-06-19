@@ -42,4 +42,13 @@ export class Service {
         );
     }
 
+    public delete(id: string) {
+
+        if (!this.repository.findById(id)) {
+            throw new Error(`id ${ id } not exists`);
+        }
+
+        return this.repository.delete(id);
+    }
+
 }
