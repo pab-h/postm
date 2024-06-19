@@ -8,10 +8,13 @@ export class Service {
     private repository: Repository;
 
     public constructor() {
+
         this.repository = new Repository();
+        
     }
 
     public create(username: string, email: string, password: string) {
+
         if (this.repository.findByEmail(email)) {
             throw new Error(`email ${ email } already exists`);
         }
@@ -49,6 +52,25 @@ export class Service {
         }
 
         return this.repository.delete(id);
+    }
+
+    public update(id: string, username: string, email: string, password: string) {
+
+        const userFound = this.repository.findById(id);
+
+        const hasEmailChanged = userFound.email != email; 
+        const hasAvailableEmail = this.repository.findByEmail(email);
+
+        if (hasEmailChanged && hasAvailableEmail) {
+            throw new Error (`email ${ email } already exists`);
+        }
+
+        return this.repository.update(
+            id,
+            username,
+            email,
+            password
+        );
     }
 
 }
