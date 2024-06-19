@@ -1,4 +1,7 @@
 import Repository from "../repositories/users";
+import bcrypt from "bcrypt";
+import env from "../env";
+import jwt from "jsonwebtoken";
 
 export class Service {
 
@@ -17,6 +20,25 @@ export class Service {
             username,
             email,
             password
+        );
+    }
+
+    public async login(email: string, password: string): Promise<string> {
+
+        const user = this.repository.findByEmail(email);
+
+        if (!user) {
+            throw new Error(`email ${ email } already exists`);
+        }
+
+        if (!await bcrypt.compare(password, user.password)) {
+            throw new Error(`wrong password for ${ email }`);
+        }
+
+        return jwt.sign(
+            { id: user.id }, 
+            env.JWT_KEY, 
+            { expiresIn: "1h" }
         );
     }
 
