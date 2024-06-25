@@ -1,19 +1,40 @@
 import { Request, Response } from "express";
 import { z } from "zod";
+import { Service } from "../services/users";
 
 const userSchema = z.object({
-    username: z.string(),
-    email: z.string().email(),
-    password: z.string()
+    username: z.string({ message: "username required "}),
+    email: z
+        .string({ message: "email required" })
+        .email({ message: "email invalid"}),
+    password: z.string({ message: "password required" })
 });
 
 const loginSchema = z.object({
-    email: z.string().email(),
-    password: z.string()
+    email: z
+        .string({ message: "email required" })
+        .email({ message: "email invalid"}),
+    password: z.string({ message: "password required" })
+});
+
+const idSchema = z.object({
+    userId: z.string({ message: "id required "})
 });
 
 export default class Controller {
-    public create(request: Request, response: Response) {
+
+    private service: Service;
+
+    public constructor() {
+        this.service = new Service();
+
+        this.create = this.create.bind(this);
+        this.login = this.login.bind(this);
+        this.delete = this.delete.bind(this);
+        this.update = this.update.bind(this);
+    }
+
+    public async create(request: Request, response: Response) {
         try {
 
             const { 
@@ -22,32 +43,31 @@ export default class Controller {
                 username
             } = userSchema.parse(request.body);
 
-            console.log(email, password, username);
+            const user = await this.service.create(
+                username,
+                email,
+                password
+            );
 
-            response.json({
-                "createdAt": "",
-                "email": "",
-                "id": "",
-                "password": null,
-                "updatedAt": "",
-                "username": ""
-            });
+            response.status(200).json(user);
 
-        } catch (error) {
+        } catch (error: any) {
 
             if (error instanceof z.ZodError) {
-                response.status(400).json(error);
+                response.status(400).json({
+                    message: error.issues[0].message
+                });
                 return;
             }
 
             response.status(500).json({
-                message: "something unexpected happened"
+                message: error.message
             });
 
         }
     }
 
-    public login(request: Request, response: Response) {
+    public async login(request: Request, response: Response) {
         try {
 
             const { 
@@ -55,33 +75,43 @@ export default class Controller {
                 password 
             } = loginSchema.parse(request.body);
 
-            console.log(email, password);
+            const token = await this.service.login(email, password);
 
-            response.json({
-                "token": ""
-            });
+            response.status(200).json({ token });
 
-        } catch (error) {
+        } catch (error: any) {
 
             if (error instanceof z.ZodError) {
-                response.status(400).json(error);
+                response.status(400).json({
+                    message: error.issues[0].message
+                });
                 return;
             }
 
             response.status(500).json({
-                message: "something unexpected happened"
+                message: error.message
             });
 
         }
     }
 
-    public delete(request: Request, response: Response) {
-        response.json({
-            "message": ""
+    public async delete(request: Request, response: Response) {
+
+        const { userId } = idSchema.parse(request.params)
+
+        if (!await this.service.delete(userId)) {
+            response.status(400).json({
+                message: `Unable to remove user ${ userId }`
+            });
+            return;
+        }
+
+        response.status(200).json({
+            message: `user ${ userId } removed`
         });
     }
 
-    public update(request: Request, response: Response) {
+    public async update(request: Request, response: Response) {
         try {
 
             const { 
@@ -90,26 +120,28 @@ export default class Controller {
                 username
             } = userSchema.parse(request.body);
 
-            console.log(email, password, username);
+            const { userId } = idSchema.parse(request);
 
-            response.json({
-                "createdAt": "",
-                "email": "",
-                "id": "",
-                "password": null,
-                "updatedAt": "",
-                "username": ""
-            });
+            const user = await this.service.update(
+                userId,
+                username,
+                email,
+                password
+            );
 
-        } catch (error) {
+            response.status(200).json(user);
+
+        } catch (error: any) {
 
             if (error instanceof z.ZodError) {
-                response.status(400).json(error);
+                response.status(400).json({
+                    message: error.issues[0].message
+                });
                 return;
             }
 
             response.status(500).json({
-                message: "something unexpected happened"
+                message: error.message
             });
 
         }
