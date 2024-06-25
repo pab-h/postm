@@ -3,7 +3,8 @@ import { z } from "zod";
 const envSchema = z.object({
     SERVER_HOST: z.string().url(),
     SERVER_PORT: z.coerce.number(),
-    JWT_KEY: z.string()
+    JWT_KEY: z.string(),
+    SALT_ROUNDS: z.coerce.number()
 });
 
 const env = envSchema.parse(process.env);
