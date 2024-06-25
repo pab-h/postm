@@ -21,6 +21,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
+    "@prisma/client": "^5.16.0",
     "bcrypt": "^5.1.1",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
