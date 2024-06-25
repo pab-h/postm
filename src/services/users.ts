@@ -2,33 +2,36 @@ import Repository from "../repositories/users";
 import bcrypt from "bcrypt";
 import env from "../env";
 import jwt from "jsonwebtoken";
+import User from "../entities/user";
 
 export class Service {
 
     private repository: Repository;
 
     public constructor() {
-
         this.repository = new Repository();
-        
     }
 
-    public create(username: string, email: string, password: string) {
+    public async create(username: string, email: string, password: string): Promise<User> {
 
-        if (this.repository.findByEmail(email)) {
+        if (await this.repository.findByEmail(email)) {
             throw new Error(`email ${ email } already exists`);
         }
         
-        return this.repository.create(
+        const user = await this.repository.create(
             username,
             email,
             password
-        );
+        ); 
+
+        user.password = "";
+
+        return user;
     }
 
     public async login(email: string, password: string): Promise<string> {
 
-        const user = this.repository.findByEmail(email);
+        const user = await this.repository.findByEmail(email);
 
         if (!user) {
             throw new Error(`email ${ email } already exists`);
@@ -45,32 +48,40 @@ export class Service {
         );
     }
 
-    public delete(id: string) {
+    public async delete(id: string): Promise<boolean> {
 
-        if (!this.repository.findById(id)) {
+        if (!await this.repository.findById(id)) {
             throw new Error(`id ${ id } not exists`);
         }
 
-        return this.repository.delete(id);
+        return await this.repository.delete(id);
     }
 
-    public update(id: string, username: string, email: string, password: string) {
+    public async update(id: string, username: string, email: string, password: string): Promise<User> {
 
-        const userFound = this.repository.findById(id);
+        const userFound = await this.repository.findById(id);
+
+        if(!userFound) {
+            throw new Error(`user ${ id } not exists`);
+        }
 
         const hasEmailChanged = userFound.email != email; 
-        const hasAvailableEmail = this.repository.findByEmail(email);
+        const hasAvailableEmail = await this.repository.findByEmail(email);
 
         if (hasEmailChanged && hasAvailableEmail) {
             throw new Error (`email ${ email } already exists`);
         }
 
-        return this.repository.update(
+        const userUpdated = await this.repository.update(
             id,
             username,
             email,
             password
         );
+
+        userUpdated.password = "";
+
+        return userUpdated;
     }
 
 }
