@@ -97,7 +97,7 @@ export default class Controller {
 
     public async delete(request: Request, response: Response) {
 
-        const { userId } = idSchema.parse(request.params)
+        const { userId } = idSchema.parse(request);
 
         if (!await this.service.delete(userId)) {
             response.status(400).json({
