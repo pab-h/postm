@@ -96,19 +96,35 @@ export default class Controller {
     }
 
     public async delete(request: Request, response: Response) {
-
-        const { userId } = idSchema.parse(request);
-
-        if (!await this.service.delete(userId)) {
-            response.status(400).json({
-                message: `Unable to remove user ${ userId }`
+        try {
+            const { userId } = idSchema.parse(request);
+    
+            if (!await this.service.delete(userId)) {
+                response.status(400).json({
+                    message: `Unable to remove user ${ userId }`
+                });
+                return;
+            }
+    
+            response.status(200).json({
+                message: `user ${ userId } removed`
             });
-            return;
+
+        } catch (error: any) {
+
+            if (error instanceof z.ZodError) {
+                response.status(403).json({
+                    message: "token required"
+                });
+                return;
+            }
+
+            response.status(500).json({
+                message: error.message
+            });
+
         }
 
-        response.status(200).json({
-            message: `user ${ userId } removed`
-        });
     }
 
     public async update(request: Request, response: Response) {
