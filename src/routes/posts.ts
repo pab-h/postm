@@ -1,17 +1,15 @@
 import { Router, Request, Response } from "express";
+import Controller from "../controllers/posts";
+import upload from "../middlewares/upload";
 
+const controller = new Controller();
 const router = Router();
 
-router.post("/create", (request: Request, response: Response) => {
-    response.send({
-        "createdAt": "",
-        "description": "",
-        "id": "",
-        "image": null,
-        "title": "",
-        "updatedAt": ""
-    });
-});
+router.post(
+    "/create", 
+    upload.single("image"), 
+    controller.create
+);
 
 router.get("/all", (request: Request, response: Response) => {
     response.send({
