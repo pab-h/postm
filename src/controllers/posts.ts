@@ -8,6 +8,10 @@ const createSchema = z.object({
     description: z.string({ message: "title required" })
 });
 
+const idSchema = z.object({
+    id: z.string({ message: "id required "})
+});
+
 export default class Controller {
 
     private service: Service;
@@ -16,6 +20,39 @@ export default class Controller {
         this.service = new Service();
         this.create = this.create.bind(this);
         this.all = this.all.bind(this);
+        this.find = this.find.bind(this);
+    }
+
+    public async find(request: Request, response: Response): Promise<void> {
+        try {
+            const { id } = idSchema.parse(request.params);
+
+            const post = await this.service.findById(id);
+
+            if (!post) {
+                response.status(400).json({
+                    message: `post ${ id } not exists`
+                })                    
+                return;
+            }
+            
+            response.status(200).json(post);
+
+        } catch(error: any) {
+
+            if (error instanceof z.ZodError) {
+                response.status(400).json({
+                    message: error.issues[0].message
+                });
+                return;
+            }
+
+            response.status(500).json({
+                message: error.message
+            });
+
+        }
+
     }
 
     public async create(request: Request, response: Response): Promise<void> {

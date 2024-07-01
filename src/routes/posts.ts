@@ -13,16 +13,7 @@ router.post(
 
 router.get("/all", controller.all);
 
-router.get("/find/:id", (request: Request, response: Response) => {
-    response.send({
-        "createdAt": "",
-        "description": "",
-        "id": "",
-        "image": null,
-        "title": "",
-        "updatedAt": ""
-    });
-});
+router.get("/find/:id", controller.find);
 
 router.delete("/delete/:id", (request: Request, response: Response) => {
     response.send({

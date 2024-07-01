@@ -9,6 +9,23 @@ export default class Repository {
         this.prisma = new PrismaClient();
     }
 
+    public async findById(id: string): Promise<Post | null> {
+        const post = await this.prisma.post.findUnique({
+            where: { id }
+        });
+
+        if (!post) {
+            return null
+        }
+
+        return new Post(
+            post.id,
+            post.image,
+            post.title,
+            post.description
+        );
+    }
+
     public async create(title: string, description: string, image: string | null): Promise<Post> {
 
         const post = await this.prisma.post.create({

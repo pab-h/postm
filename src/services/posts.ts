@@ -9,6 +9,10 @@ export default class Service {
         this.repository = new Repository();
     }
 
+    public async findById(id: string): Promise<Post | null> {
+        return await this.repository.findById(id);
+    }
+
     public async create(title: string, description: string, image: string | null) : Promise<Post>{
         return await this.repository.create(
             title,
