@@ -15,6 +15,7 @@ export default class Controller {
     public constructor() {
         this.service = new Service();
         this.create = this.create.bind(this);
+        this.all = this.all.bind(this);
     }
 
     public async create(request: Request, response: Response): Promise<void> {
@@ -36,7 +37,9 @@ export default class Controller {
                 image
             );
 
-            post.image = `${ env.SERVER_HOST }:${ env.SERVER_PORT }/api/images/${ post.image }`;
+            const hostUrl = `${ env.SERVER_HOST }:${ env.SERVER_PORT }`; 
+
+            post.image = `${ hostUrl}/api/images/${ post.image }`;
 
             response.status(200).json(post);
 
@@ -48,6 +51,28 @@ export default class Controller {
                 });
                 return;
             }
+
+            response.status(500).json({
+                message: error.message
+            });
+
+        }
+    }
+
+    public async all(request: Request, response: Response): Promise<void> {
+        try {
+
+            const hostUrl = `${ env.SERVER_HOST }:${ env.SERVER_PORT }`; 
+
+            const posts = await this.service.all();
+
+            for(const post of posts) {
+                post.image = `${ hostUrl}/api/images/${ post.image }`;
+            }
+
+            response.status(200).json({ posts });
+
+        } catch(error: any) {
 
             response.status(500).json({
                 message: error.message

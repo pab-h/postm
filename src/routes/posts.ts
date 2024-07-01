@@ -11,36 +11,7 @@ router.post(
     controller.create
 );
 
-router.get("/all", (request: Request, response: Response) => {
-    response.send({
-        "posts": [
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": null,
-                "title": "",
-                "updatedAt": ""
-            },
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": null,
-                "title": "",
-                "updatedAt": ""
-            },
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": null,
-                "title": "",
-                "updatedAt": ""
-            },
-        ]
-    });
-});
+router.get("/all", controller.all);
 
 router.get("/find/:id", (request: Request, response: Response) => {
     response.send({

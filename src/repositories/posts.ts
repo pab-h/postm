@@ -27,4 +27,22 @@ export default class Repository {
         );
     }
 
+    public async all(): Promise<Post[]> {
+        const posts = await this.prisma.post.findMany();
+
+        const postsParsed: Post[] = [];
+
+        for(const { id, image, title, description } of posts) {
+            const postParsed = new Post(
+                id,
+                image,
+                title,
+                description
+            );
+            postsParsed.push(postParsed);
+        }
+
+        return postsParsed;
+    }
+
 }

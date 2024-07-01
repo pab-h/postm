@@ -17,4 +17,8 @@ export default class Service {
         );
     }
 
+    public async all(): Promise<Post[]> {
+        return await this.repository.all();
+    }
+
 }
