@@ -15,11 +15,7 @@ router.get("/all", controller.all);
 
 router.get("/find/:id", controller.find);
 
-router.delete("/delete/:id", (request: Request, response: Response) => {
-    response.send({
-        "message": ""
-    });
-});
+router.delete("/delete/:id", controller.delete);
 
 router.put("/update/:id", (request: Request, response: Response) => {
     response.send({

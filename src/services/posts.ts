@@ -9,6 +9,10 @@ export default class Service {
         this.repository = new Repository();
     }
 
+    public async delete(id: string): Promise<boolean> {
+        return await this.repository.delete(id);
+    }
+
     public async findById(id: string): Promise<Post | null> {
         return await this.repository.findById(id);
     }

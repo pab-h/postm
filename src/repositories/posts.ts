@@ -9,6 +9,20 @@ export default class Repository {
         this.prisma = new PrismaClient();
     }
 
+    public async delete(id: string): Promise<boolean> {
+        try {
+            await this.prisma.post.delete({
+                where: { id },
+                
+            });
+    
+            return true;
+        } catch(error) {
+            return false;
+        }
+
+    }
+
     public async findById(id: string): Promise<Post | null> {
         const post = await this.prisma.post.findUnique({
             where: { id }

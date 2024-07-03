@@ -21,6 +21,39 @@ export default class Controller {
         this.create = this.create.bind(this);
         this.all = this.all.bind(this);
         this.find = this.find.bind(this);
+        this.delete = this.delete.bind(this);
+    }
+
+    public async delete(request: Request, response: Response): Promise<void> {
+        try {
+            const { id } = idSchema.parse(request.params);
+
+            if (!await this.service.delete(id)) {
+                response.status(400).json({
+                    message: `Unable to remove post ${ id }`
+                })                    
+                return;
+            }
+            
+            response.status(200).json({
+                message: `post ${ id } removed`
+            });
+
+        } catch(error: any) {
+
+            if (error instanceof z.ZodError) {
+                response.status(400).json({
+                    message: error.issues[0].message
+                });
+                return;
+            }
+
+            response.status(500).json({
+                message: error.message
+            });
+
+        }
+
     }
 
     public async find(request: Request, response: Response): Promise<void> {
