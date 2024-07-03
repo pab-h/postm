@@ -24,37 +24,6 @@ router.put("/update/:id", (request: Request, response: Response) => {
 });
 
 
-router.get("/all/page", (request: Request, response: Response) => {
-    response.send({
-        "next": "",
-        "posts": [
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": null,
-                "title": "",
-                "updatedAt": ""
-            },
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": null,
-                "title": "",
-                "updatedAt": ""
-            },
-            {
-                "createdAt": "",
-                "description": "",
-                "id": "",
-                "image": "",
-                "title": "",
-                "updatedAt": ""
-            }
-        ],
-        "previous": null
-    });
-});
+router.get("/all/page", controller.allPaged);
 
 export default router;

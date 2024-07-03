@@ -12,6 +12,12 @@ const idSchema = z.object({
     id: z.string({ message: "id required "})
 });
 
+const pageSchema = z.object({
+    size: z.coerce.number().default(10),
+    index: z.coerce.number().default(0)
+
+});
+
 export default class Controller {
 
     private service: Service;
@@ -22,6 +28,42 @@ export default class Controller {
         this.all = this.all.bind(this);
         this.find = this.find.bind(this);
         this.delete = this.delete.bind(this);
+        this.allPaged = this.allPaged.bind(this);
+    }
+
+    public async allPaged(request: Request, response: Response): Promise<void> {
+        try {
+            const { index, size } = pageSchema.parse(request.query);
+
+            if (size <= 0) {
+                throw new Error("size must be greater than zero");
+            }
+
+            if (index < 0) {
+                throw new Error("the index must be positive");
+            }
+
+            const hostUrl = `${ env.SERVER_HOST }:${ env.SERVER_PORT }`; 
+
+            const page = await this.service.allPaged(index, size);
+
+            for(const post of page.posts) {
+                post.image = `${ hostUrl }/api/images/${ post.image }`;
+            }
+
+            response.status(200).json({
+                posts: page.posts,
+                next: `${ hostUrl }/posts/all/page?size=${ size }&index=${ index + 1}`,
+                previous: `${ hostUrl }/posts/all/page?size=${ size }&index=${ index - 1}`
+            });
+
+        } catch(error: any) {
+
+            response.status(500).json({
+                message: error.message
+            });
+
+        }
     }
 
     public async delete(request: Request, response: Response): Promise<void> {
