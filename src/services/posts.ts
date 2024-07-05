@@ -15,7 +15,28 @@ export default class Service {
         this.repository = new Repository();
     }
 
+    public async update(id: string, title: string, description: string, image: string | null): Promise<Post> {
+        if (!await this.findById(id)) {
+            throw new Error(`post ${ id } not exists`);
+        }
+
+        return await this.repository.update(
+            id,
+            title,
+            description,
+            image
+        );
+    }
+
     public async allPaged(index: number, size: number): Promise<Page> {
+        if (size <= 0) {
+            throw new Error("size must be greater than zero");
+        }
+
+        if (index < 0) {
+            throw new Error("the index must be positive");
+        }
+
         const page: Page = {
             posts: await this.repository.allPaged(index, size),
             size,
@@ -26,6 +47,10 @@ export default class Service {
     }
 
     public async delete(id: string): Promise<boolean> {
+        if (!await this.findById(id)) {
+            throw new Error(`post ${ id } not exists`);
+        }
+
         return await this.repository.delete(id);
     }
 
