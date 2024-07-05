@@ -18,6 +18,11 @@ const pageSchema = z.object({
 
 });
 
+const updateSchema = z.object({
+    title: z.string({ message: "title required" }),
+    description: z.string({ message: "title required" })
+});
+
 export default class Controller {
 
     private service: Service;
@@ -29,19 +34,44 @@ export default class Controller {
         this.find = this.find.bind(this);
         this.delete = this.delete.bind(this);
         this.allPaged = this.allPaged.bind(this);
+        this.update = this.update.bind(this);
+    }
+
+    public async update(request: Request, response: Response): Promise<void> {
+        try {
+            const { id } = idSchema.parse(request.params);
+            const { 
+                title, 
+                description 
+            } = updateSchema.parse(request.body);
+
+            let image = null;
+
+            if (request.file) {
+                image = request.file.filename;
+            }
+
+            const post = await this.service.update(
+                id,
+                title,
+                description,
+                image
+            );
+
+            response.status(200).json(post);
+
+        } catch(error: any) {
+
+            response.status(500).json({
+                message: error.message
+            });
+
+        }
     }
 
     public async allPaged(request: Request, response: Response): Promise<void> {
         try {
             const { index, size } = pageSchema.parse(request.query);
-
-            if (size <= 0) {
-                throw new Error("size must be greater than zero");
-            }
-
-            if (index < 0) {
-                throw new Error("the index must be positive");
-            }
 
             const hostUrl = `${ env.SERVER_HOST }:${ env.SERVER_PORT }`; 
 

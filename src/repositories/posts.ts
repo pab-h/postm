@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
 import Post from "../entities/post";
+import env from "../env";
+import path from "path";
 
 export default class Repository {
     
@@ -7,6 +10,41 @@ export default class Repository {
 
     public constructor() {
         this.prisma = new PrismaClient();
+    }
+
+    public async update(id: string, title: string, description: string, image: string | null): Promise<Post> {
+        const oldPost = await this.prisma.post.findUnique({
+            where: { id }
+        });
+
+        const imageOld = oldPost?.image;
+
+        if (imageOld) {
+            fs.unlink(
+                path.join(env.UPLOAD_PATH, imageOld), 
+                error => {
+                    if (error) {
+                        throw new Error(`Error removing file: ${ error }`);
+                    }
+              }
+            );
+        }
+        
+        const post = await this.prisma.post.update({
+            data: {
+                title, 
+                description, 
+                image
+            },
+            where: { id }
+        });
+
+        return new Post(
+            post.id,
+            post.image,
+            post.title,
+            post.description
+        );
     }
 
     public async allPaged(index: number, size: number): Promise<Post[]> {

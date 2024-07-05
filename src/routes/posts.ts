@@ -17,12 +17,11 @@ router.get("/find/:id", controller.find);
 
 router.delete("/delete/:id", controller.delete);
 
-router.put("/update/:id", (request: Request, response: Response) => {
-    response.send({
-        "message": ""
-    });
-});
-
+router.put(
+    "/update/:id", 
+    upload.single("image"), 
+    controller.update
+);
 
 router.get("/all/page", controller.allPaged);
 
